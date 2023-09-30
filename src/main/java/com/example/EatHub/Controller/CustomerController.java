@@ -32,7 +32,34 @@ public class CustomerController {
             String response =e.getMessage();
             return new ResponseEntity(response, HttpStatus.NOT_FOUND);
         }
-
     }
+
+    // get the customer with most number of orders
+
+    @GetMapping("/get-customer-with-most-orders")
+    public ResponseEntity getCustomerWithMostOrders(){
+        try {
+            CustomerResponse customerResponse = customerService.getCustomerWithMostOrders();
+            return new ResponseEntity(customerResponse, HttpStatus.FOUND);
+        }
+        catch(CustomerNotFoundException e){
+            String response= e.getMessage();
+            return new ResponseEntity(response, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // get the female customer with least number of orders
+    @GetMapping("/get-customer-with-least-orders")
+    public ResponseEntity getCustomerWithLeastOrders(){
+        try {
+            CustomerResponse customerResponse = customerService.getCustomerWithLeastOrders();
+            return new ResponseEntity(customerResponse, HttpStatus.FOUND);
+        }
+        catch(CustomerNotFoundException e){
+            String response= e.getMessage();
+            return new ResponseEntity(response, HttpStatus.NOT_FOUND);
+        }
+    }
+
 
 }
