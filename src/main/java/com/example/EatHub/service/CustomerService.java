@@ -15,9 +15,13 @@ import java.util.Optional;
 
 @Service
 public class CustomerService {
-    @Autowired
-    CustomerRepository customerRepository;
 
+    final CustomerRepository customerRepository;
+
+    @Autowired
+    public CustomerService(CustomerRepository customerRepository){
+        this.customerRepository=customerRepository;
+    }
     public CustomerResponse addCustomer(CustomerRequest customerRequest) {
         Customer customer= CustomerTransformer.CustomerRequestToCustomer(customerRequest);
         Cart cart= Cart.builder()

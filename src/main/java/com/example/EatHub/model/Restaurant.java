@@ -38,7 +38,7 @@ public class Restaurant {
     boolean opened;
 
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
-    List<MenuItem> menuItems =new ArrayList<>();
+    List<MenuItem> availableMenuItems =new ArrayList<>();
 
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
     List<OrderEntity> orders= new ArrayList<>();

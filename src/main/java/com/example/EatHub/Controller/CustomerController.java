@@ -12,8 +12,12 @@ import com.example.EatHub.service.CustomerService;
 @RestController
 @RequestMapping("/customer")
 public class CustomerController {
+
+    final CustomerService customerService;
     @Autowired
-    CustomerService customerService;
+    public CustomerController(CustomerService customerService){
+        this.customerService=customerService;
+    }
 
     @PostMapping("/add")
     public ResponseEntity addCustomer(@RequestBody CustomerRequest customerRequest){
