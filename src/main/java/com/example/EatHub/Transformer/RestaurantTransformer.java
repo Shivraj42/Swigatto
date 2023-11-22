@@ -15,7 +15,7 @@ public class RestaurantTransformer {
     public static Restaurant RestaurantRequestToRestaurant(RestaurantRequest restaurantRequest){
         return Restaurant.builder()
                 .name(restaurantRequest.getName())
-                .contact(restaurantRequest.getContact())
+                .contactNumber(restaurantRequest.getContact())
                 .restaurantCategory(restaurantRequest.getRestaurantCategory())
                 .location(restaurantRequest.getLocation())
                 .opened(true)
@@ -31,7 +31,7 @@ public class RestaurantTransformer {
         return  RestaurantResponse.builder()
                 .name(restaurant.getName())
                 .location(restaurant.getLocation())
-                .contact(restaurant.getContact())
+                .contact(restaurant.getContactNumber())
                 .opened(restaurant.isOpened())
                 .menu(menu)
                 .build();

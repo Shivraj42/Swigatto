@@ -30,7 +30,7 @@ public class Restaurant {
 
     @Column(unique = true,nullable = false)
     @Size(min = 10, max = 10)
-    String contact;
+    String contactNumber;
 
     @Enumerated(EnumType.STRING)
     RestaurantCategory restaurantCategory;
