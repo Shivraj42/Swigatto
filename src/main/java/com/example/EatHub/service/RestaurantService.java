@@ -5,6 +5,8 @@ import com.example.EatHub.Transformer.RestaurantTransformer;
 import com.example.EatHub.dto.requestDTOs.MenuRequest;
 import com.example.EatHub.dto.requestDTOs.RestaurantRequest;
 import com.example.EatHub.dto.responseDTOs.RestaurantResponse;
+import com.example.EatHub.exceptions.AccountAlreadyExistException;
+import com.example.EatHub.exceptions.InvalidEmailOrMobileNoException;
 import com.example.EatHub.exceptions.RestaurantNotFoundException;
 import com.example.EatHub.model.MenuItem;
 import com.example.EatHub.model.Restaurant;
@@ -33,6 +35,14 @@ public class RestaurantService {
 
 
     public RestaurantResponse addRestaurant(RestaurantRequest restaurantRequest) {
+        // check mobileNo
+        if(restaurantRequest.getContact().length()!=10){
+            throw new InvalidEmailOrMobileNoException("Invalid Contact Number!");
+        }
+        Optional<Restaurant> restaurantOptional= restaurantRepository.findByContactNumber(restaurantRequest.getContact());
+        if(restaurantOptional.isPresent()){
+            throw new AccountAlreadyExistException("Account already present with this Contact number!");
+        }
         // restaurantRequest to restaurant entity
         Restaurant restaurant= RestaurantTransformer.RestaurantRequestToRestaurant(restaurantRequest);
         // save the entity

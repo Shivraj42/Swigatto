@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/menu")
 public class MenuController {
+
     // get all foods of a particualr category
 
     // get all MAIN_COURSE items with price above x rupees from a particular restaurant.

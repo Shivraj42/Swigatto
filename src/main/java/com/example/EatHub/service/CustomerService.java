@@ -3,6 +3,7 @@ package com.example.EatHub.service;
 import com.example.EatHub.Transformer.CustomerTransformer;
 import com.example.EatHub.dto.requestDTOs.CustomerRequest;
 import com.example.EatHub.dto.responseDTOs.CustomerResponse;
+import com.example.EatHub.exceptions.AccountAlreadyExistException;
 import com.example.EatHub.exceptions.CustomerNotFoundException;
 import com.example.EatHub.model.Cart;
 import com.example.EatHub.model.Customer;
@@ -23,6 +24,15 @@ public class CustomerService {
         this.customerRepository=customerRepository;
     }
     public CustomerResponse addCustomer(CustomerRequest customerRequest) {
+        // check for email and mob first
+        Optional<Customer> customerOptional =customerRepository.findByMobileNo(customerRequest.getMobileNo());
+        if(customerOptional.isPresent()){
+            throw new AccountAlreadyExistException("Already have account with this mobile number!");
+        }
+        Optional<Customer> customerOptional1 =customerRepository.findByEmail(customerRequest.getEmail());
+        if(customerOptional1.isPresent()){
+            throw new AccountAlreadyExistException("Already have account with this email!");
+        }
         Customer customer= CustomerTransformer.CustomerRequestToCustomer(customerRequest);
         Cart cart= Cart.builder()
                 .cartTotal(0)

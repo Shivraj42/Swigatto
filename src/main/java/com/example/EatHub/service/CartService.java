@@ -38,43 +38,45 @@ public class CartService {
     }
 
     public CartStatusResponse addFoodItemToCart(FoodRequest foodRequest) {
-
+        // check customer is valid
         Optional<Customer> customerOptional = customerRepository.findByMobileNo(foodRequest.getCustomerMobile());
         if(customerOptional.isEmpty()){
             throw new CustomerNotFoundException("Customer doesn't exisit");
         }
         Customer customer= customerOptional.get();
 
+        // Check the menu item available in resto
         Optional<MenuItem> menuItemOptional = menuRepository.findById(foodRequest.getMenuItemId());
         if(menuItemOptional.isEmpty()){
             throw new MenuItemNotFoundException("Item not available in the restaurant!!!");
         }
-
+        //check if resto is closed or item is unavailable
         MenuItem menuItem = menuItemOptional.get();
         if(!menuItem.getRestaurant().isOpened() || !menuItem.isAvailable()) {
             throw new MenuItemNotFoundException("Given dish is out of stock for now!!!");
         }
 
+        // get the customer
         Cart cart = customer.getCart();
 
         // having item from same restaurant
+        // if we have the food items from another restaurant then we clear the cart
+        // all the foot items should be from same restaurant
         if(cart.getFoodItems().size()!=0){
             Restaurant currRestaurant = cart.getFoodItems().get(0).getMenuItem().getRestaurant();
             Restaurant newRestaurant = menuItem.getRestaurant();
 
             if(!currRestaurant.equals(newRestaurant)){
                 List<FoodItem> foodItems = cart.getFoodItems();
-                for(FoodItem foodItem: foodItems) {
-                    foodItem.setCart(null);
-                    foodItem.setOrder(null);
-                    foodItem.setMenuItem(null);
-                }
+                //
                 cart.setCartTotal(0);
-                cart.getFoodItems().clear();
-                foodRepository.deleteAll(foodItems);
+                for(FoodItem foodItem: foodItems) {
+                    cart.getFoodItems().remove(foodItem); // remove from the cart
+                    foodRepository.delete(foodItem);      // remove from the db
+                }
             }
         }
-
+        // if food item already present from same restaurant just increase Quantity
         boolean alreadyExists = false;
         FoodItem savedFoodItem = null;
         if(cart.getFoodItems().size()!=0){
@@ -89,7 +91,7 @@ public class CartService {
             }
         }
 
-        if(!alreadyExists){
+        if(!alreadyExists){                             // new food item from same restaurant
             FoodItem foodItem = FoodItem.builder()
                     .menuItem(menuItem)
                     .requiredQuantity(foodRequest.getRequiredQuantity())

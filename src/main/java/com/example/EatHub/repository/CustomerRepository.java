@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
     public Optional<Customer> findByMobileNo(String mob);
+    public Optional<Customer> findByEmail(String email);
 
     @Query(value = "select c from Customer c order by size(c.orders) desc limit 1")
     Optional<Customer> getCustomerWithMostOrders();

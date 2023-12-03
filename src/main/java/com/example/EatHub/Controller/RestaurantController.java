@@ -3,6 +3,8 @@ package com.example.EatHub.Controller;
 import com.example.EatHub.dto.requestDTOs.MenuRequest;
 import com.example.EatHub.dto.requestDTOs.RestaurantRequest;
 import com.example.EatHub.dto.responseDTOs.RestaurantResponse;
+import com.example.EatHub.exceptions.AccountAlreadyExistException;
+import com.example.EatHub.exceptions.InvalidEmailOrMobileNoException;
 import com.example.EatHub.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,9 +28,18 @@ public class RestaurantController {
 
     @PostMapping("/add")
     public ResponseEntity addRestaurant(@RequestBody RestaurantRequest restaurantRequest){
-
-        RestaurantResponse restaurantResponse= restaurantService.addRestaurant(restaurantRequest);
-        return  new ResponseEntity(restaurantResponse, HttpStatus.CREATED);
+        try{
+            RestaurantResponse restaurantResponse= restaurantService.addRestaurant(restaurantRequest);
+            return  new ResponseEntity(restaurantResponse, HttpStatus.CREATED);
+        }
+        catch (InvalidEmailOrMobileNoException e){
+            String response=e.getMessage();
+            return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+        }
+        catch (AccountAlreadyExistException e){
+            String response=e.getMessage();
+            return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+        }
     }
 
     // update status

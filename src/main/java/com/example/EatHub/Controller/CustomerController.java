@@ -2,6 +2,7 @@ package com.example.EatHub.Controller;
 
 import com.example.EatHub.dto.requestDTOs.CustomerRequest;
 import com.example.EatHub.dto.responseDTOs.CustomerResponse;
+import com.example.EatHub.exceptions.AccountAlreadyExistException;
 import com.example.EatHub.exceptions.CustomerNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,8 +22,14 @@ public class CustomerController {
 
     @PostMapping("/add")
     public ResponseEntity addCustomer(@RequestBody CustomerRequest customerRequest){
-        CustomerResponse customerResponse= customerService.addCustomer(customerRequest);
-        return new ResponseEntity(customerResponse, HttpStatus.CREATED);
+        try {
+            CustomerResponse customerResponse= customerService.addCustomer(customerRequest);
+            return new ResponseEntity(customerResponse, HttpStatus.CREATED);
+        }
+        catch (AccountAlreadyExistException e){
+            String response =e.getMessage();
+            return new ResponseEntity(response, HttpStatus.NOT_FOUND);
+        }
     }
 
     //get customer by mobileNo

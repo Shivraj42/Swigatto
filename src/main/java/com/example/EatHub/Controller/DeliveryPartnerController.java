@@ -1,6 +1,8 @@
 package com.example.EatHub.Controller;
 
 import com.example.EatHub.dto.requestDTOs.DeliveryPartnerRequest;
+import com.example.EatHub.exceptions.AccountAlreadyExistException;
+import com.example.EatHub.exceptions.InvalidEmailOrMobileNoException;
 import com.example.EatHub.service.DeliveryPartnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,8 +27,18 @@ public class DeliveryPartnerController {
     // add
     @PostMapping("/add")
     public ResponseEntity addDeliveryPartner(@RequestBody DeliveryPartnerRequest deliveryPartnerRequest){
-        String message= deliveryPartnerService.addDeliveryPartner(deliveryPartnerRequest);
-        return new ResponseEntity(message, HttpStatus.CREATED);
+        try{
+            String message= deliveryPartnerService.addDeliveryPartner(deliveryPartnerRequest);
+            return new ResponseEntity(message, HttpStatus.CREATED);
+        }
+        catch (AccountAlreadyExistException e){
+            String message= e.getMessage();
+            return new ResponseEntity(message, HttpStatus.BAD_REQUEST);
+        }
+        catch (InvalidEmailOrMobileNoException e){
+            String message= e.getMessage();
+            return new ResponseEntity(message, HttpStatus.BAD_REQUEST);
+        }
     }
 
     // give delivery partner with highest number of deliveries

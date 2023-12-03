@@ -5,10 +5,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface DeliveryPartnerRepository extends JpaRepository<DeliveryPartner, Integer> {
     String findRandomPartner = "select p from DeliveryPartner p order by RAND() LIMIT 1";
 
     @Query(value = findRandomPartner)
     DeliveryPartner findRandomDeliveryPartner();
+
+   public Optional<DeliveryPartner> findByMobileNo(String mobileNo);
 }
